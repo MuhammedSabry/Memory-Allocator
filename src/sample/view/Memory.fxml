@@ -9,55 +9,54 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sample.controller.MemoryController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.MemoryController">
     <bottom>
-        <Button fx:id="memory_next" alignment="CENTER" mnemonicParsing="false" text="Next" textAlignment="CENTER"
-                BorderPane.alignment="CENTER_RIGHT">
+        <Button fx:id="memory_next" alignment="CENTER" mnemonicParsing="false" text="Next" textAlignment="CENTER" BorderPane.alignment="CENTER_RIGHT">
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
         </Button>
     </bottom>
     <right>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
             <children>
-                <Label text="Hole"/>
-                <TextField fx:id="memory_name" alignment="CENTER" disable="true" text="H0"/>
-                <Label text="Size"/>
-                <TextField fx:id="memory_size" alignment="CENTER" layoutX="18.0" layoutY="33.0"/>
-                <Button fx:id="memory_add" mnemonicParsing="false" text="Add"/>
+                <Label text="Hole" />
+                <TextField fx:id="memory_name" alignment="CENTER" disable="true" text="H0" />
+                <Label text="Size" />
+                <TextField fx:id="memory_size" alignment="CENTER" layoutX="18.0" layoutY="33.0" />
+            <Label layoutX="87.0" layoutY="74.0" text="Starting Adress" />
+            <TextField fx:id="memory_start" alignment="CENTER" layoutX="18.0" layoutY="97.0" />
+                <Button fx:id="memory_add" mnemonicParsing="false" text="Add" />
             </children>
             <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
             </padding>
         </VBox>
     </right>
     <padding>
-        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>
     <left>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
             <children>
                 <Label text="Memory" textAlignment="CENTER">
                     <font>
-                        <Font name="System Bold" size="13.0"/>
+                        <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <ListView fx:id="memory_list"/>
+                <ListView fx:id="memory_list" />
             </children>
             <opaqueInsets>
-                <Insets/>
+                <Insets />
             </opaqueInsets>
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
             <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
             </padding>
         </VBox>
     </left>

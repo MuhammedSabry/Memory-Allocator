@@ -1,8 +1,8 @@
 package sample.model;
 
 public class Process {
-    String name;
-    int size;
+    private String name;
+    private int size;
 
     public String getName() {
         return name;
@@ -18,5 +18,10 @@ public class Process {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
     }
 }
