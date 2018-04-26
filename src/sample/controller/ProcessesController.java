@@ -2,13 +2,18 @@ package sample.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import sample.model.Process;
 import sample.util.ViewUtil;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -33,13 +38,25 @@ public class ProcessesController implements Initializable {
                     process.setName(process_name.getText());
                     process.setSize(Integer.parseInt(process_size.getText()));
                     processesList.add(process);
-                    ViewUtil.setNextName(process_name, "P", processesList.size());
+                    ViewUtil.setNextName(process_name, "P", processesList.size() + 1);
                 } else
                     ViewUtil.validate(process_size, 1);
             }
         });
 
         process_next.setOnMouseClicked(mouseEvent -> {
+            if (processesList.size() >= 1) {
+                Parent data = null;
+                try {
+                    data = FXMLLoader.load(getClass().getResource("/sample/view/Allocator.fxml"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Stage stage = (Stage) process_next.getScene().getWindow();
+                assert data != null;
+                Scene scene = new Scene(data);
+                stage.setScene(scene);
+            }
         });
 
         process_size.textProperty().addListener((observableValue, oldValue, newValue) -> ViewUtil.validate(process_size, 1));

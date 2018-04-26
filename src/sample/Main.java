@@ -11,8 +11,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("view/Memory.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setTitle("Memory Allocator");
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("file:///home/muhammed/IdeaProjects/Memory-Allocator/src/sample/chartStyle.css");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

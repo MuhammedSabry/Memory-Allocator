@@ -24,7 +24,7 @@
             </BorderPane.margin>
             <children>
                 <Label text="Process" />
-                <TextField fx:id="process_name" alignment="CENTER" disable="true" text="P0" />
+                <TextField fx:id="process_name" alignment="CENTER" disable="true" text="P1" />
                 <Label text="Size" />
                 <TextField fx:id="process_size" alignment="CENTER" />
                 <Button fx:id="process_add" mnemonicParsing="false" text="Add" />

@@ -22,6 +22,6 @@ public class Process {
 
     @Override
     public String toString() {
-        return this.getName();
+        return this.getName() + " -> " + this.getSize();
     }
 }
