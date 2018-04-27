@@ -14,67 +14,58 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.MemoryController">
     <bottom>
-      <AnchorPane BorderPane.alignment="CENTER_RIGHT">
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-         <children>
+        <AnchorPane BorderPane.alignment="CENTER_RIGHT">
+            <BorderPane.margin>
+                <Insets/>
+            </BorderPane.margin>
             <HBox alignment="CENTER" layoutX="8.0" spacing="8.0" AnchorPane.leftAnchor="8.0">
-               <children>
-                  <Label text="Allocating Type" />
-                  <ChoiceBox fx:id="allocator_type" prefWidth="150.0" />
-               </children>
+                <Label text="Allocating Type"/>
+                <ChoiceBox fx:id="allocator_type" prefWidth="150.0"/>
             </HBox>
-              <Button fx:id="memory_next" alignment="CENTER" mnemonicParsing="false" text="Next" textAlignment="CENTER" AnchorPane.rightAnchor="0.0" />
-         </children>
-      </AnchorPane>
+            <Button fx:id="memory_next" alignment="CENTER" mnemonicParsing="false" text="Next" textAlignment="CENTER"
+                    AnchorPane.rightAnchor="0.0"/>
+        </AnchorPane>
     </bottom>
     <right>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets />
+                <Insets/>
             </BorderPane.margin>
-            <children>
-                <Label text="Hole" />
-                <TextField fx:id="memory_name" alignment="CENTER" disable="true" text="H1" />
-                <Label text="Size" />
-                <TextField fx:id="memory_size" alignment="CENTER" layoutX="18.0" layoutY="33.0" />
-                <Label layoutX="87.0" layoutY="74.0" text="Starting Adress" />
-                <TextField fx:id="memory_start" alignment="CENTER" layoutX="18.0" layoutY="97.0" />
-                <Button fx:id="memory_add" mnemonicParsing="false" text="Add" />
-            </children>
             <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
+            <Label text="Hole"/>
+            <TextField fx:id="memory_name" alignment="CENTER" disable="true" text="H1"/>
+            <Label text="Size"/>
+            <TextField fx:id="memory_size" alignment="CENTER" layoutX="18.0" layoutY="33.0"/>
+            <Label layoutX="87.0" layoutY="74.0" text="Starting Adress"/>
+            <TextField fx:id="memory_start" alignment="CENTER" layoutX="18.0" layoutY="97.0"/>
+            <Button fx:id="memory_add" mnemonicParsing="false" text="Add"/>
         </VBox>
     </right>
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>
    <left>
-      <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="Memory" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
-            <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-               <content>
-                  <VBox fx:id="memory_vBox" alignment="TOP_CENTER" prefHeight="400.0" prefWidth="248.0" spacing="1.0">
-                     <padding>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </padding>
-                  </VBox>
-               </content>
-            </ScrollPane>
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-         <padding>
-            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-         </padding>
-      </VBox>
+       <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
+           <opaqueInsets>
+               <Insets/>
+           </opaqueInsets>
+           <padding>
+               <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+           </padding>
+           <Label text="Memory" textAlignment="CENTER">
+              <font>
+                  <Font name="System Bold" size="13.0"/>
+              </font>
+           </Label>
+           <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+               <VBox fx:id="memory_vBox" alignment="TOP_CENTER" prefHeight="400.0" prefWidth="248.0" spacing="1.0">
+                   <padding>
+                       <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+                   </padding>
+               </VBox>
+           </ScrollPane>
+       </VBox>
    </left>
 </BorderPane>

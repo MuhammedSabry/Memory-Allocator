@@ -1,16 +1,13 @@
 package sample.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import sample.model.Memory;
 import sample.model.Process;
 import sample.util.ViewUtil;
 
@@ -37,8 +34,10 @@ public class ProcessesController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ViewUtil.drawMemory(memoryList, 0, memory_vBox);
+        //Drawing the initial memory to be played with
+        ViewUtil.drawMemory(memoryList, memory_vBox);
 
+        //Setting up the Table columns
         TableColumn<Process, String> col1 = new TableColumn<>("Process");
         col1.setCellValueFactory(new PropertyValueFactory<>("name"));
         col1.setSortable(false);
@@ -52,6 +51,7 @@ public class ProcessesController implements Initializable {
         processes_table.setItems(processList);
 
 
+        //Adding new processes
         process_add.setOnMouseClicked(mouseEvent -> {
             if (ViewUtil.isNumeric(process_size.getText(), 1)) {
                 Process process = new Process(process_name.getText(), Integer.valueOf(process_size.getText()), false);
@@ -65,23 +65,6 @@ public class ProcessesController implements Initializable {
         process_size.textProperty().addListener((observableValue, oldValue, newValue) -> ViewUtil.validate(process_size, 1));
 
 
-        //To put a color of the row weather the process is allocated or not
-//        processes_table.setRowFactory((column) -> new TableRow<Process>() {
-//            @Override
-//            protected void updateItem(Process process, boolean empty) {
-//                super.updateItem(process, empty);
-//                if (process == null || empty) { //If the cell is empty
-//                    setStyle("");
-//                } else { //If the cell is not empty
-//
-//                    if (process.isAllocated())
-//                        setStyle("-fx-background-color: rgba(0,255,37,0.49)"); //The background of the cell in yellow
-//                    else
-//                        setStyle("-fx-background-color: rgba(255,15,0,0.51)"); //The background of the cell in yellow
-//                }
-//            }
-//        });
-
         //To turn off cells Re-Ordering
         processes_table.skinProperty().addListener((obs, oldSkin, newSkin) -> {
             final TableHeaderRow header = (TableHeaderRow) processes_table.lookup("TableHeaderRow");
@@ -89,10 +72,9 @@ public class ProcessesController implements Initializable {
         });
 
         //To check if a process can be allocated or de-allocated
-        processes_table.getSelectionModel().selectedItemProperty().addListener((observableValue, process, t1) -> {
+        processes_table.getSelectionModel().selectedItemProperty().addListener((observableValue, t1, process) -> {
             if (process != null) {
                 if (process.isAllocated()) {
-
                     btn_allocate.setDisable(true);
                     btn_deAllocate.setDisable(false);
                 } else {
@@ -102,6 +84,8 @@ public class ProcessesController implements Initializable {
             }
         });
 
+
+        //Listen for allocating btn clicks
         btn_allocate.setOnMouseClicked(mouseEvent -> {
             Process process = processes_table.getSelectionModel().getSelectedItem();
             if (process != null) {
@@ -109,26 +93,99 @@ public class ProcessesController implements Initializable {
                     firstFitAllocator(process);
                 else
                     bestFitAllocator(process);
+                processes_table.getSelectionModel().clearSelection();
             }
         });
 
+        //Listen for de-allocating btn clicks
         btn_deAllocate.setOnMouseClicked(mouseEvent -> {
             Process process = processes_table.getSelectionModel().getSelectedItem();
             if (process != null) {
                 processDeAllocator(process);
+                processes_table.getSelectionModel().clearSelection();
             }
         });
     }
 
+    /**
+     * Allocates the given process according to the smallest hole that can hold the process
+     */
     private void bestFitAllocator(Process process) {
+        int bestIndex = 0;
+        int bestSize = 0;
+        for (int i = 0; i < memoryList.size(); i++) {
+            Memory memory = memoryList.get(i);
+            if (memory.getSize() >= process.getSize() && memory.isHole()) {
+                if (memory.getSize() < bestSize || bestSize == 0) {
+                    bestSize = memory.getSize();
+                    bestIndex = i;
+                }
+            }
+        }
+        if (bestSize != 0) {
+            Memory memory = memoryList.get(bestIndex);
 
+            memoryList.add(bestIndex, new Memory(process.getName(), memory.getStartingAddress(), process.getSize(), false));
+
+            memory.setSize(memory.getSize() - process.getSize());
+            memory.setStartingAddress(memory.getStartingAddress() + process.getSize());
+            process.setAllocated(true);
+
+        }
+        ViewUtil.drawMemory(memoryList, memory_vBox);
     }
 
+    /**
+     * Allocates the given process according to the first hole that fits it
+     */
     private void firstFitAllocator(Process process) {
-
+        for (int i = 0; i < memoryList.size(); i++) {
+            Memory memory = memoryList.get(i);
+            if (memory.getSize() >= process.getSize() && memory.isHole()) {
+                memoryList.add(i, new Memory(process.getName(), memory.getStartingAddress(), process.getSize(), false));
+                memory.setSize(memory.getSize() - process.getSize());
+                memory.setStartingAddress(memory.getStartingAddress() + process.getSize());
+                process.setAllocated(true);
+                break;
+            }
+        }
+        ViewUtil.drawMemory(memoryList, memory_vBox);
     }
 
-    private void processDeAllocator(Process process) {
 
+    /**
+     * Method to de-allocate processes
+     *
+     * @param process:The process to be de-allocated
+     */
+    private void processDeAllocator(Process process) {
+        for (int i = 0; i < memoryList.size(); i++) {
+
+            //Checking if the current memoryList item is the process to be de-allocated
+            if (memoryList.get(i).getName().equals(process.getName())) {
+                //Removing the process from the memory list
+                memoryList.remove(i);
+
+                //Now we are checking on the item just right after the process in the memory list
+                if (memoryList.get(i).isHole()) {
+                    Memory memory = memoryList.get(i);
+                    memory.setSize(memory.getSize() + process.getSize());
+                    memory.setStartingAddress(memory.getStartingAddress() - process.getSize());
+                } else {
+                    //We should get the next hole that's after that process
+                    for (int j = i; j < memoryList.size(); j++) {
+                        if (memoryList.get(j).isHole()) {
+                            memoryList.add(i, new Memory(memoryList.get(j).getName(), memoryList.get(i).getStartingAddress() - process.getSize(), process.getSize(), true));
+                            break;
+                        }
+                    }
+                }
+                //Setting that the process is now free for allocation
+                process.setAllocated(false);
+                break;
+            }
+        }
+        //Finally drawing the memory again
+        ViewUtil.drawMemory(memoryList, memory_vBox);
     }
 }
