@@ -13,7 +13,6 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("view/Memory.fxml"));
         primaryStage.setTitle("Memory Allocator");
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("file:///home/muhammed/IdeaProjects/Memory-Allocator/src/sample/chartStyle.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

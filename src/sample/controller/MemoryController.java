@@ -1,16 +1,17 @@
 package sample.controller;
 
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.*;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import sample.model.Memory;
 import sample.util.ViewUtil;
 
@@ -20,6 +21,8 @@ import java.util.*;
 
 public class MemoryController implements Initializable {
 
+    public static String BEST_FIT = "Best Fit";
+    public static String FIRST_FIT = "First Fit";
 
     public Button memory_next;
     public TextField memory_name;
@@ -27,67 +30,55 @@ public class MemoryController implements Initializable {
     public Button memory_add;
     public TextField memory_start;
 
+    public static List<Memory> memoryList = new ArrayList<>();
+    public VBox memory_vBox;
+    public ChoiceBox allocator_type;
 
-    public StackedBarChart memory_chart;
-    public NumberAxis address_axis;
+    private int currentAddress;
 
-    static List<Memory> memoryList;
+    public static String allocationType;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        memory_chart.setLegendVisible(false);
+        allocator_type.setItems(FXCollections.observableArrayList(FIRST_FIT, BEST_FIT));
+        allocator_type.setValue(FIRST_FIT);
 
-        memoryList = new ArrayList<>();
 
         memory_add.setOnMouseClicked(mouseEvent -> {
             //Checking if the text fields contain numbers only or not
             if (ViewUtil.isNumeric(memory_size.getText(), 1) && ViewUtil.isNumeric(memory_start.getText(), 0)) {
-                //If there are already holes in the list
-                if (!memoryList.isEmpty()) {
-                    //Must check if the starting address isn't lower than the last one in the list (No conflicts)
-                    if (Integer.valueOf(memory_start.getText()) >= (memoryList.get(memoryList.size() - 1).getSize() + memoryList.get(memoryList.size() - 1).getStartingAddress())) {
+                //Must check if the starting address isn't lower than the last one in the list (No conflicts)
+                if (Integer.valueOf(memory_start.getText()) >= currentAddress) {
 
-                        //Creating the hole to add
-                        Memory memory = new Memory();
-                        memory.setName(memory_name.getText());
-                        memory.setSize(Integer.parseInt(memory_size.getText()));
-                        memory.setStartingAddress(Integer.parseInt(memory_start.getText()));
-                        memory.setHole(true);
+                    //Creating the hole to add
+                    Memory memory = new Memory(memory_name.getText()
+                            , Integer.parseInt(memory_start.getText())
+                            , Integer.parseInt(memory_size.getText())
+                            , true);
 
-
-                        Memory last = memoryList.get(memoryList.size() - 1);
-
-                        //Checking if there
-                        int startingAdd = last.getStartingAddress() + last.getSize();
-                        int index;
-                        if (startingAdd < Integer.valueOf(memory_start.getText())) {
-                            addGap(startingAdd, Integer.valueOf(memory_start.getText()) - startingAdd);
-                            index = memoryList.size() - 1;
-                        } else
-                            index = memoryList.size();
-                        memoryList.add(memory);
-                        prepareChart(index);
-                    } else {
-                        //Give a little warning about the invalid field
-                        ViewUtil.validate(memory_start, (memoryList.get(memoryList.size() - 1).getStartingAddress()
-                                + memoryList.get(memoryList.size() - 1).getSize()));
-                    }
-                }
-                //If it's the first time to add a hole
-                else {
-
-                    Memory memory = new Memory();
-                    memory.setName(memory_name.getText());
-                    memory.setSize(Integer.parseInt(memory_size.getText()));
-                    memory.setStartingAddress(Integer.parseInt(memory_start.getText()));
-                    memory.setHole(true);
-
+                    int index;
+                    //In case that there is a gap between the previous hole and next one
+                    if (Integer.valueOf(memory_start.getText()) > currentAddress)
+                        addGap(currentAddress, Integer.valueOf(memory_start.getText()) - currentAddress);
                     memoryList.add(memory);
-                    prepareChart(0);
+                    Memory.organizeMemory(memoryList);
+                    ViewUtil.drawMemory(memoryList, 0, memory_vBox);
+                } else {
+                    //Give a little warning about the invalid field
+                    ViewUtil.validate(memory_start, (memoryList.get(memoryList.size() - 1).getStartingAddress()
+                            + memoryList.get(memoryList.size() - 1).getSize()));
                 }
+
+                //Getting last memory item in the list
+                Memory lastMemory = memoryList.get(memoryList.size() - 1);
+
+                //Calculating the next valid starting address
+                currentAddress = lastMemory.getStartingAddress() + lastMemory.getSize();
+
                 //Setting the name of the hole
-                ViewUtil.setNextName(memory_name, "H", memoryList.size());
+                memory_name.setText("H" + (Integer.valueOf(memoryList.get(memoryList.size() - 1).getName().substring(1)) + 1));
+                memory_start.setText(String.valueOf(currentAddress));
             }
             //Then there must be a wrong field Give a little warning about the invalid field
             else {
@@ -96,9 +87,9 @@ public class MemoryController implements Initializable {
             }
         });
 
-        memory_next.setOnMouseClicked(mouseEvent ->
-        {
+        memory_next.setOnMouseClicked(mouseEvent -> {
             if (memoryList.size() >= 1) {
+                allocationType = (String) allocator_type.getValue();
                 Parent data = null;
                 try {
                     data = FXMLLoader.load(getClass().getResource("/sample/view/Processes.fxml"));
@@ -112,54 +103,15 @@ public class MemoryController implements Initializable {
             }
         });
 
-        memory_size.textProperty().
-                addListener((observableValue, oldValue, newValue) -> ViewUtil.validate(memory_size, 1));
-        memory_start.textProperty().
-                addListener((observableValue, oldValue, newValue) -> {
-                    if (memoryList.isEmpty())
-                        ViewUtil.validate(memory_start, 0);
-                    else
-                        ViewUtil.validate(memory_start, (memoryList.get(memoryList.size() - 1).getStartingAddress()
-                                + memoryList.get(memoryList.size() - 1).getSize()));
-                });
+        memory_size.textProperty().addListener((observableValue, oldValue, newValue) -> ViewUtil.validate(memory_size, 1));
+        memory_start.textProperty().addListener((observableValue, oldValue, newValue) -> ViewUtil.validate(memory_start, currentAddress));
     }
 
     private void addGap(int startingAdd, int i) {
-        Memory memory = new Memory();
-        memory.setHole(false);
-        memory.setName("OS");
-        memory.setStartingAddress(startingAdd);
-        memory.setSize(i);
+        Memory memory = new Memory("OS"
+                , startingAdd
+                , i
+                , false);
         memoryList.add(memory);
-    }
-
-    private void prepareChart(int index) {
-        address_axis.setLowerBound(0);
-        address_axis.setUpperBound(memoryList.get(memoryList.size() - 1).getStartingAddress() + memoryList.get(memoryList.size() - 1).getSize());
-        address_axis.setTickLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number number) {
-                for (Memory memory : memoryList)
-                    if (number.intValue() == memory.getStartingAddress() + memory.getSize())
-                        return String.valueOf(number.intValue());
-                return null;
-            }
-
-            @Override
-            public Number fromString(String s) {
-                return null;
-            }
-        });
-
-        for (int i = index; i < memoryList.size(); i++) {
-            XYChart.Series series = new XYChart.Series();
-            series.getData().add(new XYChart.Data<>("", memoryList.get(i).getSize()));
-            series.setName("Label");
-            memory_chart.getData().add(series);
-            if (memoryList.get(i).isHole())
-                memory_chart.lookup(".default-color" + i + ".chart-bar").setStyle("-fx-bar-fill: GREY;");
-            else
-                memory_chart.lookup(".default-color" + i + ".chart-bar").setStyle("-fx-bar-fill: rgba(96,96,96,0.34);");
-        }
     }
 }
