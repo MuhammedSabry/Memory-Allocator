@@ -14,9 +14,6 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.ProcessesController">
     <right>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
-            <BorderPane.margin>
-                <Insets />
-            </BorderPane.margin>
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
             </padding>
@@ -40,12 +37,6 @@
     </padding>
     <left>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-            <BorderPane.margin>
-                <Insets />
-            </BorderPane.margin>
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
             </padding>

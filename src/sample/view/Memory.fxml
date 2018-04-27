@@ -15,9 +15,6 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.MemoryController">
     <bottom>
         <AnchorPane BorderPane.alignment="CENTER_RIGHT">
-            <BorderPane.margin>
-                <Insets/>
-            </BorderPane.margin>
             <HBox alignment="CENTER" layoutX="8.0" spacing="8.0" AnchorPane.leftAnchor="8.0">
                 <Label text="Allocating Type"/>
                 <ChoiceBox fx:id="allocator_type" prefWidth="150.0"/>
@@ -28,9 +25,6 @@
     </bottom>
     <right>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
-            <BorderPane.margin>
-                <Insets/>
-            </BorderPane.margin>
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
@@ -48,9 +42,6 @@
     </padding>
    <left>
        <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
-           <opaqueInsets>
-               <Insets/>
-           </opaqueInsets>
            <padding>
                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
            </padding>
