@@ -1,12 +1,10 @@
 package sample.controller;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
@@ -20,8 +18,6 @@ import java.util.*;
 
 public class MemoryController implements Initializable {
 
-    private static String BEST_FIT = "Best Fit";
-    static String FIRST_FIT = "First Fit";
 
     public Button memory_next;
     public TextField memory_name;
@@ -29,20 +25,14 @@ public class MemoryController implements Initializable {
     public Button memory_add;
     public TextField memory_start;
 
-    static List<Memory> memoryList = new ArrayList<>();
     public VBox memory_vBox;
-    public ChoiceBox allocator_type;
+
+    static List<Memory> memoryList = new ArrayList<>();
 
     private int currentAddress;
-
-    static String allocationType;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        //Setting allocator_type selection box items
-        allocator_type.setItems(FXCollections.observableArrayList(FIRST_FIT, BEST_FIT));
-        allocator_type.setValue(FIRST_FIT);
 
         //Listening for adding a new hole
         memory_add.setOnMouseClicked(mouseEvent -> {
@@ -91,7 +81,6 @@ public class MemoryController implements Initializable {
         memory_next.setOnMouseClicked(mouseEvent -> {
             //Making sure the memoryList isn't empty
             if (memoryList.size() >= 1) {
-                allocationType = (String) allocator_type.getValue();
                 Parent data = null;
                 try {
                     data = FXMLLoader.load(getClass().getResource("/sample/view/Processes.fxml"));

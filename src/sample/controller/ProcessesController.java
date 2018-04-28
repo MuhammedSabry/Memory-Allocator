@@ -14,13 +14,14 @@ import sample.util.ViewUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static sample.controller.MemoryController.FIRST_FIT;
-import static sample.controller.MemoryController.allocationType;
 import static sample.controller.MemoryController.memoryList;
 
 
 public class ProcessesController implements Initializable {
 
+    private String FIRST_FIT = "First Fit";
+
+    public ChoiceBox allocator_type;
     public TextField process_name;
     public TextField process_size;
     public Button process_add;
@@ -34,6 +35,11 @@ public class ProcessesController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        //Setting allocator_type selection box items
+        allocator_type.setItems(FXCollections.observableArrayList(FIRST_FIT, "Best Fit"));
+        allocator_type.setValue(FIRST_FIT);
+
         //Drawing the initial memory to be played with
         ViewUtil.drawMemory(memoryList, memory_vBox);
 
@@ -89,7 +95,7 @@ public class ProcessesController implements Initializable {
         btn_allocate.setOnMouseClicked(mouseEvent -> {
             Process process = processes_table.getSelectionModel().getSelectedItem();
             if (process != null) {
-                if (allocationType.equals(FIRST_FIT))
+                if (allocator_type.getValue().equals(FIRST_FIT))
                     firstFitAllocator(process);
                 else
                     bestFitAllocator(process);
